@@ -1,0 +1,73 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:cache="http://www.springframework.org/schema/cache"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:ehcache="http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring"
+	xsi:schemaLocation="
+	    http://www.springframework.org/schema/beans     
+        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-4.0.xsd
+        http://www.springframework.org/schema/cache
+        http://www.springframework.org/schema/cache/spring-cache.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd"> 
+       
+
+        
+	<context:component-scan base-package="com.lendingkart.autodialler" />
+    <mvc:annotation-driven />
+   
+    
+    <!-- To read cls.properties file -->
+    <bean id="autoDiallerConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="classpath:cls.properties" />
+		<property name="placeholderPrefix" value="${props:" />
+	</bean>
+	
+	<bean id="propertiesReader" class="com.lendingkart.autodialler.beans.PropertiesBean">
+		<property name="clsURI" value="${props:cls.uri}" />
+		<property name="clsAuthToken" value="${props:cls.auth_token}" />
+		<property name="loginGrantType" value="${props:cls.login.grant_type}" />
+		<property name="loginClientId" value="${props:cls.login.client_id}" />
+		<property name="loginClientSecret" value="${props:cls.login.client_secret}" />
+		<property name="loginUsername" value="${props:cls.login.username}" />
+		<property name="loginPassword" value="${props:cls.login.password}" />
+		<property name="loginURI" value="${props:cls.login.uri}" />
+		<property name="lendingkartToken" value="${props:lendingkart.token}" />
+	</bean>
+	
+
+    <!-- Enable this to add JSP pages -->
+	 <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+	  <property name="prefix">
+		<value>/WEB-INF/pages/</value>
+	  </property>
+	  <property name="suffix">
+		<value>.jsp</value>
+	  </property>
+	</bean> 
+	
+	
+	<!-- *******************************
+    	 ***** CACHE CONFIGURATION *****
+    	 ******************************* -->         
+    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
+    	<property name="cacheManager" ref="ehcache"/>
+    </bean>
+    <bean id="ehcache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+    	<property name="configLocation" value="classpath:ehcache.xml"/>
+    	<property name="shared" value="true"/>
+    </bean>
+    
+    <cache:annotation-driven/>
+  
+	
+	
+   
+	
+	
+
+</beans>
